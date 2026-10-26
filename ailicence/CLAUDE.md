@@ -6,13 +6,20 @@ Read the root `../CLAUDE.md` first. This file holds what is specific to this pro
 
 **Done**
 - Project folder created. Context, decisions and a draft planning document written (`AI Licence Programme - Planning.md`).
-- Portal research file started (`portal-options-research.md`); options listed, vendor claims not yet verified.
+- Portal research file started (`portal-options-research.md`); options listed, vendor claims not yet verified. **Parked: portal is a later phase.**
+- Open questions trimmed to framework-phase items only (see "Scope of this phase").
+- Agreed with the user what the next document is: a short **framework and plan paper** for approval, not a full business case. Not started, because the AI policy is not yet known.
 
-**Still to do**
-- Research and compare portal options (SharePoint-native, custom web app, open source). Verify claims from vendor docs.
-- Refine level definitions with the AI champions.
-- Draft the question bank (`question-bank.md`) once levels are agreed.
-- Resolve the open questions below.
+**Next steps (in order)**
+1. TODO: find out whether a firm AI policy exists, who owns it (likely the innovations team, with risk and compliance giving input, unconfirmed) and who reviews it. Level 1 content and the Level 4 acceptable-use statement depend on it. If none exists, add a "create or confirm the policy" step at the start of the plan.
+2. Refine level definitions, pass rules and evidence rules with the AI champions.
+3. Draft the framework and plan paper. Ask the user first whether it should be the short form or the full house structure with `[TBC]` markers.
+4. Draft the question bank (`question-bank.md`) only once levels are agreed.
+
+**Planned content of the framework and plan paper**
+- Can write now: the problem (staff want agentic AI, open access risks client data); the earn-not-attend principle; the ask to the Board (approve the framework and plan); the four draft levels; the evidence register and champion assessors; manager approval and signed statement at Level 4; optional renewal suggestion; phasing; risks (box-ticking, champion workload, policy delay, people feeling locked out).
+- Cannot write yet: what each level teaches (needs the policy); pass marks and practical rubrics; timeline, cost, headcount.
+- Phasing: Phase 1 framework, Phase 2 portal/content/costs, Phase 3 rollout and link Level 4 to the licensing process.
 
 ## Purpose
 
@@ -24,22 +31,23 @@ Staff want agentic AI (tools that act on files, run code, call connectors). Givi
 - **Only Level 4 unlocks agentic rights.** Levels 1–3 are non-agentic skill levels. No sandboxed agentic use at Level 3.
 - **No usage data or tracking is used to qualify anyone** for any level. Do not propose usage reports, gateway logs or prompt counts as evidence.
 - **No separate badge app or vendor platform just for an internal badge.** Badges are shown on a **SharePoint page in the AI Champions section**: a list of people and their badges that anyone can view and display.
-- **Delivery portal is undecided.** Options: a SharePoint page, a custom-built hosted web app, or open source. Research is needed to choose. Training, tests and any gamification may live there.
+- **Delivery portal is undecided and is a later phase.** Options: a SharePoint page, a custom-built hosted web app, or open source. Research is needed to choose. Training, tests and any gamification may live there.
 - Evidence must be provable: see the register in the planning document.
 
 ## Draft levels (proposals, not agreed)
 
 See `AI Licence Programme - Planning.md`. Working names: 1 Safe Foundations, 2 Effective User, 3 Advanced User, 4 Agent Ready.
 
+## Scope of this phase
+
+Framework and plan only, enough to get approval. Portal, content source (firm-made or external), cost and funding, headcount, which agentic tools Level 4 unlocks, and Microsoft licensing (Power Automate, Entra) are **later phases** and are deliberately not being resolved now.
+
 ## Open questions
 
-- [ ] Headcount in scope; number of AI champions and their hours per week for assessing.
-- [ ] Which agentic tools would Level 4 users get (e.g. Codex, Claude Code, Copilot agents, CoCounsel agentic)?
-- [ ] Policy owner (risk/compliance) and the firm AI policy the Level 1 training must reference.
-- [ ] Renewal period and re-test rule (no usage tracking).
-- [ ] Is Power Automate (approvals) available in the firm's Microsoft licences? Is Entra the identity platform?
-- [ ] Who funds a portal build; is the badge page visible firm-wide?
-- [ ] Training format: firm-made videos, curated external content, or both?
+- [ ] TODO: AI policy owner and status. Likely the innovations team with risk and compliance reviewing or giving input, but unconfirmed. Level 1 training and the Level 4 acceptable-use statement depend on it. Does a written policy exist yet, or does the framework need a step to create one?
+- [ ] Agree level definitions, pass rules and evidence rules with the AI champions.
+- [ ] Level 4: confirm manager approval and signed acceptable-use statement (assumed yes).
+- [ ] Renewal (user leaning: not required, but include as a suggestion): suggest, as an optional item in the plan, a light check-in at the AI champions meeting with a re-test only if the policy or tools change materially or after an incident. No expiry is the alternative. Nothing is tracked.
 
 ## Working rules
 
