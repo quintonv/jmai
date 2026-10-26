@@ -7,6 +7,7 @@ This repo holds project business cases and supporting material for JMCO (James M
 - `docs/` — source material. Reference PDFs and their Markdown conversions.
 - `aiusage/` — AI usage material (not covered by this guide).
 - `aigateway/` — Project 1: comparing AI gateways for JMCO (leading candidate: Cloudflare AI Gateway, for its enterprise controls). Holds the Word business case and, later, research MD files.
+- `ailicence/` — Project 2: AI Licence Programme. Staff earn Levels 1–4 through training and tests; only Level 4 makes them eligible for agentic AI rights. Read `ailicence/CLAUDE.md` first.
 - `tools/` — `make-business-case-docx.js`, the script that generates the Word business-case template (see "Generating the Word document").
 
 ## Reference document
