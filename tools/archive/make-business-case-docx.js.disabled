@@ -1,0 +1,246 @@
+const fs=require('fs');
+const {Document,Packer,Paragraph,TextRun,Table,TableRow,TableCell,WidthType,ShadingType,BorderStyle,AlignmentType,LevelFormat,Footer,PageNumber,HeadingLevel}=require('docx');
+const BLUE='1F4E79', F='Arial';
+const run=(t,o={})=>new TextRun({text:t,font:F,size:20,...o});
+const P=(t,o={})=>new Paragraph({spacing:{after:120,line:276},children:[run(t,o.r)],...o.p});
+const B=(t)=>new Paragraph({numbering:{reference:'b',level:0},spacing:{after:60},children:Array.isArray(t)?t:[run(t)]});
+const N=(t)=>new Paragraph({numbering:{reference:'n',level:0},spacing:{after:60},children:[run(t)]});
+const H1=t=>new Paragraph({heading:HeadingLevel.HEADING_1,spacing:{before:300,after:120},keepNext:true,children:[new TextRun({text:t,font:F,size:28,bold:true,color:BLUE})]});
+const H2=t=>new Paragraph({heading:HeadingLevel.HEADING_2,spacing:{before:200,after:100},keepNext:true,children:[new TextRun({text:t,font:F,size:22,bold:true})]});
+const LB=(l,t)=>B([run(l+' ',{bold:true}),run(t)]);
+const bd={style:BorderStyle.SINGLE,size:4,color:'BFBFBF'};
+const borders={top:bd,bottom:bd,left:bd,right:bd};
+const TOTAL=9360;
+function table(widths,head,rows,opt={}){
+  const right=opt.right||[];
+  const cell=(t,w,o)=>new TableCell({width:{size:w,type:WidthType.DXA},borders,margins:{top:80,bottom:80,left:100,right:100},shading:o.fill?{type:ShadingType.CLEAR,fill:o.fill,color:'auto'}:undefined,children:[new Paragraph({alignment:o.right?AlignmentType.RIGHT:AlignmentType.LEFT,children:[run(t,{bold:o.bold,color:o.color,size:18})]})]});
+  return new Table({width:{size:TOTAL,type:WidthType.DXA},columnWidths:widths,rows:[
+    new TableRow({tableHeader:true,children:head.map((h,i)=>cell(h,widths[i],{fill:BLUE,bold:true,color:'FFFFFF',right:right.includes(i)}))}),
+    ...rows.map((r,ri)=>new TableRow({children:r.map((c,i)=>cell(c,widths[i],{fill:ri%2?'F2F2F2':undefined,bold:(i==0&&opt.boldFirst)||(opt.boldLast&&ri==rows.length-1),right:right.includes(i)}))}))]});
+}
+const sp=()=>new Paragraph({spacing:{after:120},children:[]});
+const TBC=t=>P('[TBC: '+t+']',{r:{italics:true,color:'7F7F7F'}});
+const $=n=>'$'+n.toLocaleString('en-US');
+
+// Cloudflare proposal dated October 7, 2026 (see aigateway/Cloudflare_One_Proposal_JamesMoore.md)
+const opts=[
+ {n:'Option 1',bundle:'Essentials + AI Gateway',term:'13 months',free:1,m:4600,paid:12},
+ {n:'Option 2',bundle:'Essentials + AI Gateway',term:'39 months',free:3,m:4600,paid:36},
+ {n:'Option 3',bundle:'Advantage + AI Gateway',term:'13 months',free:1,m:6031,paid:12},
+ {n:'Option 4',bundle:'Advantage + AI Gateway',term:'39 months',free:3,m:6031,paid:36}];
+const optRows=opts.map(o=>[o.n,o.bundle,o.term+' ('+o.free+' free)',$(o.m),String(o.paid),$(o.m*o.paid),$(o.m*12)]);
+const lo=opts[0].m*12, hi=opts[2].m*12;
+
+const c=[
+ new Paragraph({spacing:{after:0},children:[new TextRun({text:'AI Gateway and Secure Access Platform',font:F,size:48,bold:true,color:BLUE})]}),
+ new Paragraph({spacing:{after:240},children:[new TextRun({text:'JMCO Business Case',font:F,size:48,bold:true,color:BLUE})]}),
+ P('Prepared for: CEO & Operations Board',{r:{bold:true},p:{spacing:{after:40}}}),
+ P('Date: October 2026',{p:{spacing:{after:40}}}),
+ P('Prepared by: Quinton Viljoen, AI & Innovation Support'),
+ TBC('Draft. Items marked [TBC] still need confirmation. See the Draft Notes at the end of this document.'),
+
+ H1('Request for Approval'),
+ P('The Operations Board is asked to approve the following:',{r:{bold:true}}),
+ N('Adoption of Cloudflare AI Gateway, delivered as part of the Cloudflare One bundle, as the firm’s governed entry point for AI usage, together with its SASE security services (secure web access, data loss prevention, secure remote access and network security).'),
+ N('Selection of Cloudflare as the platform vendor, with Presidio, Cloudflare’s preferred partner, to assist with implementation. [TBC: confirm the partner’s name and obtain a written quote.]'),
+ N('Authorization of the total investment, including ongoing subscription costs and one-time implementation costs. The Cloudflare proposal offers four options with contract totals from '+$(lo)+' to '+$(opts[3].m*opts[3].paid)+'; the preferred option is [TBC].'),
+ N('Signature by 11/25 so that Cloudflare’s proposal pricing is held [TBC: confirm November 25, 2026], with a target go-live of [TBC: date and the reason for choosing it].'),
+
+ H1('Executive Summary'),
+ P('The firm currently spends approximately $300,000 USD a year on AI tools, including ChatGPT, Microsoft Copilot, Gamma, CoCounsel and some Claude. [TBC: source and breakdown.] Usage is spread across several products and bills, which makes it hard to apply consistent policy, see what data is sent where, and manage cost.',{r:{bold:true}}),
+ P('An AI gateway is a control layer between the firm’s users and applications and the AI model providers. (Every AI request passes through one place, so the firm can authenticate users, log activity, scan for sensitive data, set limits and control spend.) Cloudflare provides this through its AI Gateway, offered inside the Cloudflare One bundle, which also includes secure web access, data loss prevention (DLP) and firewall-as-a-service.'),
+ P('Cloudflare One is also a SASE platform. (SASE, or Secure Access Service Edge, combines network security services such as a firewall, secure web access, data loss prevention and secure remote access into one cloud service.) The bundle in Cloudflare’s proposal includes these services for 300 seats under a single per-seat price. This could replace the firm’s current corporate firewall and may reduce other security and network costs, so one purchase adds corporate AI governance while consolidating security spend with one vendor. [TBC: current firewall vendor, annual cost and contract end date. TBC: other network or security tools the bundle could replace, with their costs.]'),
+ P('This approach allows the firm to:'),
+ B('Apply consistent security, access and data-protection controls to AI usage.'),
+ B('See who is using which models and what it costs.'),
+ B('Set spend limits and use caching to stretch AI budgets. (To be tested in a pilot.)'),
+ B('Avoid dependence on a single AI model provider.'),
+ B('Consolidate firewall and AI governance on one platform the firm can build on.'),
+ P('The investment is judged on its Day-1 value: governance, data protection and consolidation. Wider agentic and AI-integration opportunities are treated as future options requiring their own business cases.'),
+ P('This proposal recommends approving Cloudflare One with AI Gateway, with the contract option to be confirmed. [TBC]'),
+
+ H1('Why This Decision Matters Now'),
+ H2('Infrastructure Readiness'),
+ P('The firm already has a Microsoft 365 governance foundation. [TBC: confirm Microsoft Entra ID for sign-in, and Purview and Intune status.] Cloudflare integrates with the firm’s identity provider so that AI access follows each employee’s corporate sign-in. ChatGPT Enterprise has about 250 seats today, with a few users on other tools. Cloudflare’s 300 seats leave some headroom for AI users, but the same seats would cover the firewall and other security services, so they may need to cover all staff. [TBC: confirm total headcount and seat count.]'),
+ H2('Problems This Solves'),
+ LB('No single control point:','AI usage is spread across about six products, each with its own settings and bill. [TBC: confirm no central control exists today.]'),
+ LB('Limited visibility:','It is hard to see who uses which model, how much, and what data is sent. [TBC: confirm what reporting exists today.]'),
+ LB('Data protection:','Sensitive client or firm data could be pasted into unapproved AI tools. A gateway with DLP can detect and block it.'),
+ LB('Cost pressure:','Some users already ask for extra credits or tokens during the month. A gateway adds spend limits and reporting by team.'),
+ LB('Fragmented security spend:','Network security and AI governance are bought separately. Cloudflare One, a SASE platform, could consolidate them under one vendor and one control plane. [TBC: tools it could replace.]'),
+ H2('Governance and Operational Efficiency'),
+ TBC('Describe the specific governance priorities: acceptable-use policy, client confidentiality and professional-standards obligations, auditability, and who owns the policy.'),
+ H2('Cost of Delay'),
+ P('The firm’s AI spend is approximately $300,000 a year and is not governed by a single policy or reporting view. Cloudflare’s proposal pricing is held only if the agreement is signed by 11/25. [TBC: confirm date.] [TBC: current firewall cost and renewal date, and any announced price increases.] Renewing the firewall before the decision would delay the consolidation savings. [TBC: confirm renewal timing.]'),
+
+ H1('Financial Considerations'),
+ P('Cloudflare’s proposal, dated October 7, 2026, offers four options. Pricing is quoted per month with annual billing and is held only with signature by 11/25. Contract totals below are our calculation: monthly price multiplied by the paid months in the term (the free months are excluded). [TBC: confirm with Cloudflare.]'),
+ P('Negotiation status.',{r:{bold:true},p:{spacing:{after:40}}}),
+ TBC('State which commercial terms are still open. Treat figures as a conservative ceiling.'),
+ P('Cloudflare Proposal Options',{r:{bold:true},p:{spacing:{after:60}}}),
+ table([1100,1860,1400,1100,900,1600,1400],['Option','Bundle','Term','Monthly','Paid months','Contract total','Per year'],optRows,{right:[3,4,5,6]}),
+ sp(),
+ P('All options include: AI Gateway (100k logs); Access, secure web Gateway, DLP and CASB at 300 seats each; and Premium Success. The proposal names the bundles “Interna Essentials” and “Interna Advantage”. [TBC: confirm the product name.] Essentials includes network security at 1 mbps per seat. Advantage increases this to 2 mbps per seat and adds Browser Isolation for 300 seats.'),
+ P('The log allowance, 100k logs, may not be enough for the firm’s usage or retention needs. [TBC: ask Cloudflare whether the allowance is rolling, what happens on overage, and whether logs can be exported to firm-owned storage.]'),
+ P('Security Consolidation Offset',{r:{bold:true},p:{spacing:{after:60}}}),
+ table([4160,2600,2600],['Item','Annual cost','Notes'],[
+  ['Current corporate firewall: [TBC: vendor]','[TBC]','[TBC: contract end date]'],
+  ['Other tools the bundle could replace (for example VPN, web filter, remote access): [TBC]','[TBC]','[TBC: contract end dates]'],
+  ['Cloudflare One subscription (per year)',$(lo)+' – '+$(hi),'Annual equivalent of the four options'],
+  ['Net difference','[TBC]','Depends on firewall cost']],{boldLast:true,right:[1]}),
+ sp(),
+ P('One-Time Implementation Costs',{r:{bold:true},p:{spacing:{after:60}}}),
+ table([6360,3000],['One-Time Item','Estimated Cost'],[['Implementation and configuration with Presidio (gateway, identity, firewall cutover): verbal estimate of $12,000 – $14,000, not a quote [TBC: written quote]','$12,000 – $14,000'],['Employee web portal (optional)','[TBC]'],['Training and change management','[TBC]'],['One-Time Total (partner estimate only; other items TBC)','$12,000 – $14,000 + [TBC]']],{right:[1],boldLast:true}),
+ sp(),
+ P('Total Year 1 Investment',{r:{bold:true},p:{spacing:{after:60}}}),
+ table([6360,3000],['Component','Year 1'],[['Cloudflare subscription (annual equivalent)',$(lo)+' – '+$(hi)],['One-time implementation (Presidio verbal estimate)','$12,000 – $14,000'],['Subtotal before offsets, portal and training',$(lo+12000)+' – '+$(hi+14000)],['Less: firewall and other security costs avoided','[TBC]'],['Total Year 1 Investment','[TBC]']],{right:[1],boldLast:true}),
+ sp(),
+ P('Funding source: [TBC: for example, innovation budget]. [TBC: AI subscriptions that could be reduced or retired, and a Year 2 and Year 3 view.]'),
+
+ H1('About the Vendor'),
+ P('Cloudflare is a connectivity and security platform whose services run on a single global network. Its Cloudflare One offering combines secure access, secure web gateway, data loss prevention and network security under one control plane. Cloudflare AI Gateway is a separate product that adds logging, caching, rate limits and model routing for AI traffic.'),
+ P('Cloudflare One is a SASE platform, meaning the security services run as one cloud service on one network with one control plane, instead of separate appliances and products. The approach can lower cost and complexity by replacing several tools with one, and by letting the firm manage AI governance and network security in the same place. [TBC: confirm which current tools it would replace.]'),
+ TBC('Cloudflare financial position (revenue growth, profitability, cash, customers) from public filings. Do not rely on Cloudflare marketing figures.'),
+ P('The case-study material supplied by Cloudflare cites a Forrester study (227% ROI, $21.4M three-year NPV). These are Cloudflare’s claims for typical customers and are not results for the firm. [TBC: decide whether to include with attribution.]'),
+
+ H1('Current State'),
+ P('The table below summarizes AI tools in use today. Usage figures can be seeded from the firm’s monthly AI usage reports.'),
+ table([1700,2700,1100,1700,2160],['Tool','Primary Use','Users','Annual Cost','Notes'],[
+  ['ChatGPT Enterprise','General AI assistant','About 250 seats','[TBC]','Credit-based; some users request extra credits. [TBC: allocation per user]'],
+  ['Microsoft Copilot','AI inside Microsoft 365','[TBC]','[TBC]','[TBC]'],
+  ['CoCounsel (Thomson Reuters)','AI assistant for tax, audit and accounting work','[TBC]','[TBC]','[TBC]'],
+  ['Gamma','AI presentation and document builder','[TBC]','[TBC]','[TBC]'],
+  ['Claude','Some use, including by developers','[TBC]','[TBC]','Developers also use Codex. [TBC]'],
+  ['Total','','','Approximately $300,000','[TBC: source]']],{boldLast:true}),
+ sp(),
+ H2('Current Challenges'),
+ LB('Several tools, no common policy:','Each product has its own settings and data handling. [TBC]'),
+ LB('Limited usage and cost visibility:','Reporting is separate for each tool.'),
+ LB('Credit and token limits:','Some users request additional credits. Demand is not planned across the firm.'),
+ LB('Data exposure risk:','There is no single point where sensitive data can be detected before it reaches an AI provider. [TBC]'),
+
+ H1('Options Evaluated'),
+ P('Options were reviewed against JMCO’s core requirements: corporate governance of AI use; data privacy and DLP; identity and single sign-on with Microsoft; audit, logging and usage visibility; cost controls; employee access through a web interface (most staff use AI in the browser); multi-model flexibility; maturity and production readiness; consolidation with existing security infrastructure; and total cost to implement and sustain. Developer and agentic tooling carried little weight because developers already use Claude and Codex and agentic use at the firm is limited.'),
+ H2('Cloudflare AI Gateway (recommended direction)'),
+ P('Strong across governance, DLP, guardrails, logging, cost controls, model routing and multi-model access, with single sign-on through Cloudflare Access. It is also part of a wider security platform that could replace the firm’s firewall. It does not include an employee chat interface, so the firm would keep existing tools routed where possible, or host its own corporate-branded portal behind Cloudflare Access. The portal could be built on an open-source interface or built in-house; build effort is [TBC]. Choosing the bundle also concentrates more services with one vendor, which makes switching later harder (see Risks).'),
+ H2('CData Connect AI Gateway'),
+ P('Strong for connecting AI to enterprise systems, with managed MCP and governed actions on business data, and a permissions model that follows the user’s identity. However, CData announced the gateway on September 29, 2026 as an early-access program, and no general availability date has been found, so production readiness, support terms and pricing are unproven. Its main advantage is agentic access to business systems, which the firm uses little today; Cloudflare covers the firm’s core governance needs, and agentic use could be enabled through other tools routed through Cloudflare. [TBC: confirm with CData and test the agentic approach.]'),
+ H2('Kong AI Gateway'),
+ P('A capable gateway with an administrative console, routing and analytics. However, it is an administrator and developer tool and does not provide an employee-facing web interface, which most JMCO staff need. It would also not consolidate the firm’s firewall. [TBC: confirm peer review feedback that it is heavily code-focused.]'),
+ H2('Kiro'),
+ P('Reviewed because it was reported to be in use at a major bank, and the firm wanted to see what other financial-services organizations use and why. [TBC: confirm the source and whether JMCO is classed as a financial services provider.] Kiro is an AWS agentic development environment built around spec-driven coding. However, it is a developer tool and not a governance gateway for company-wide AI use. The firm’s developers already use Claude and Codex, and the firm’s need is corporate governance.'),
+
+ H1('Comparison Summary'),
+ table([2160,1800,1800,1800,1800],['Criterion','Cloudflare','CData','Kong','Kiro'],[
+  ['Central AI governance','Strong','Strong','[TBC]','Not a gateway'],
+  ['DLP and data privacy','Strong (built-in DLP)','Strong; focused on data permissions','[TBC]','[TBC]'],
+  ['Employee web interface','Not included; existing tools or firm-hosted portal','Backend gateway; no chat product','Admin console only','Developer IDE'],
+  ['Maturity','Established','Early access since Sep 29, 2026','[TBC]','Preview, per sources'],
+  ['Enterprise data and MCP access','Via other tools [TBC]','Core strength','[TBC]','Not applicable'],
+  ['Consolidation with firewall','Yes, Cloudflare One','No','No','No'],
+  ['Contract cost',$(lo)+' – '+$(opts[3].m*opts[3].paid),'[TBC]','[TBC]','[TBC]']]),
+ sp(),
+
+ H1('What Gets Easier and What Gets Harder'),
+ table([1700,3830,3830],['Area','Easier','Harder or new'],[
+  ['Policy and control','One place to set who may use AI and which models.','Another platform to learn, own and keep current.'],
+  ['Data protection','DLP and guardrails applied before data reaches AI providers.','Policies need tuning to avoid blocking legitimate work.'],
+  ['Cost','Spend limits, reporting by team, possible savings from caching.','Savings from caching are unproven and apply only to traffic through the gateway.'],
+  ['Security stack','Possible consolidation of firewall and AI governance.','Firewall cutover must be planned carefully.'],
+  ['Users','Familiar tools can remain; optional corporate portal.','Change for users if tools or sign-in flows change.'],
+  ['Logging','Central logs and audit trail.','Log allowance and retention must be planned.'],
+  ['Vendor','Fewer vendors to manage.','More dependence on one vendor.']]),
+ sp(),
+
+ H1('Crawl, Walk, Run Approach'),
+ H2('1. Future State (Day 1 — Go-Live)'),
+ P('At go-live, JMCO will have a governed point of control for AI usage with single sign-on, logging, data loss prevention and baseline limits.'),
+ B('Cloudflare Access and the firm’s identity provider control who can reach AI services.'),
+ B('Secure web and DLP policies apply to AI traffic.'),
+ B('SASE services are live for the firm’s users. [TBC: confirm the firewall cutover scope and date.]'),
+ B('AI Gateway logs and limits apply to API-based tools and applications.'),
+ TBC('Confirm which existing tools can be routed through the gateway. ChatGPT Enterprise and Microsoft Copilot seats may remain outside it.'),
+ H2('2. Year 1 Outcomes (“Walk” — Realized Value)'),
+ B('Visibility of AI usage and cost by team.'),
+ B('Optional corporate-branded web portal for staff, hosted by the firm and routed through the gateway. It could replace ChatGPT and other web-based tools for general use. [TBC: build effort and which tools it would replace.]'),
+ B('Pilot of caching, spend limits and DLP on the portal. Because the portal sends requests through the gateway, these controls apply to it. The pilot tests whether the same value can be delivered for less spend, for example with a smaller monthly allowance per user. Savings depend on how often similar requests repeat, and moving from per-seat licences to usage-based pricing changes the cost model, so both are measured before any savings are claimed. [TBC: current allowance and extra-credit requests.]'),
+ B('Retirement of the old firewall and any other replaced security tools, once the cutover is stable. [TBC: tools and dates.]'),
+ H2('3. Future “Run” State (Long-Term Vision, 18–24+ Months)'),
+ P('Additional capabilities become possible on the same platform, such as agentic tools approved and governed through Cloudflare, model routing and firm-wide AI analytics. This is enabled by the initial implementation, not required for it.'),
+
+ H1('Governance and Implementation Structure'),
+ H2('JMCO Success Team'),
+ P('Business owner: Lucia Valenzuela, Chief Innovation Officer, responsible for business outcomes, user impact, adoption and communications. Project support: Quinton Viljoen, AI & Innovation Support.'),
+ H2('Internal Technology Services (ITS)'),
+ P('[TBC: ITS lead name and title, expected to be Larry Neal, Senior ITS Manager. Update when confirmed.] Leads the technical implementation, including identity integration and firewall cutover. [TBC: ITS hours reserved per week.]'),
+ H2('Vendor and Partners'),
+ P('Cloudflare provides the platform and Premium Success. Presidio, Cloudflare’s preferred partner, is expected to assist with setup and onboarding. [TBC: scope of work, written quote and responsibilities. The $12,000 – $14,000 figure was a verbal estimate on a call and the partner asked not to be held to it.] [TBC: support and escalation.]'),
+
+ H1('Implementation Plan'),
+ H2('Phase 1: Foundation & Design'),
+ P('Objective: Confirm the option and contract, and design identity, policy, logging and firewall cutover.'),
+ TBC('Key activities, dates and outputs.'),
+ H2('Phase 2: Build, Pilot & Validation'),
+ P('Objective: Configure the gateway and security services and test with a pilot group, including caching and DLP policies.'),
+ TBC('Key activities, dates and outputs.'),
+ H2('Phase 3: Deployment & Training'),
+ TBC('Objective, role-based training, and the optional web portal.'),
+ H2('Phase 4: Go-Live'),
+ TBC('Objective, firewall cutover plan and rollback, and day-1 outcomes.'),
+ H2('Phase 5: Post-Go-Live Stabilization & Optimization'),
+ TBC('Objective, adoption metrics, policy tuning and year-1 outcomes.'),
+ H2('Communication & Change Management'),
+ TBC('Channels and a month-by-month timeline. Focus on helping staff carry on day to day work with minimal disruption.'),
+
+ H1('Key Success Factors'),
+ B('A clear AI acceptable-use and data-handling policy enforced through the platform.'),
+ B('Strong identity, access and logging standards from the outset.'),
+ B('A smooth firewall cutover that does not disrupt daily work.'),
+ B('Clear communication and training across all service lines.'),
+ B('A focus on adoption, not just technical deployment.'),
+
+ H1('Risk Assessment and Considerations'),
+ table([1700,2300,2300,3060],['Risk','Description','Impact','Mitigation'],[
+  ['1. Adoption & Behavior Risk','Users bypass the gateway and use unmanaged AI tools.','Ungoverned usage persists; reduced visibility and control.','[TBC: champions, training, secure web policies that block unapproved AI sites]'],
+  ['2. Business Continuity & Firewall Cutover Risk','Firewall, SASE or access changes disrupt daily work.','Lost productivity and client impact.','[TBC: phased cutover, rollback plan, timing outside busy periods]'],
+  ['3. Security & Data Leakage Risk','Sensitive client data is sent to AI providers.','Confidentiality and compliance exposure.','DLP and guardrails at the gateway. [TBC: policy design]'],
+  ['4. Integration Risk','Gateway does not integrate cleanly with identity and existing tools.','Delayed rollout; workarounds.','[TBC]'],
+  ['5. Logging & Retention Risk','The 100k log allowance is exceeded or does not meet retention needs.','Gaps in audit evidence or extra cost.','[TBC: clarify with Cloudflare; export logs to firm storage]'],
+  ['6. Cost Control Risk','Usage-based costs grow, or expected caching savings are not realized.','Unplanned spend.','Spend limits and a pilot before relying on savings. [TBC]'],
+  ['7. Vendor Concentration Risk','Firewall and AI governance sit with one vendor.','Switching later is difficult; service-continuity exposure.','[TBC: shorter 13-month term, exit terms, uptime commitments]'],
+  ['8. Governance & Sustainability Risk','Policies drift or are not maintained.','Gradual loss of control and auditability.','[TBC: named owner, periodic reviews]']],{boldFirst:true}),
+ sp(),
+
+ H1('Reference Calls'),
+ P('The firm conducted or plans reference calls with comparable organizations:'),
+ B('[TBC: Cloudflare customers of similar size or sector]'),
+
+ H1('Appendix'),
+ H2('Cloudflare One Components and Tools They Could Replace'),
+ table([3000,3180,3180],['Cloudflare One component','Current tool it could replace','Annual cost'],[
+  ['Network security (firewall as a service)','[TBC: current firewall]','[TBC]'],
+  ['Access (zero trust network access)','[TBC: VPN or remote access]','[TBC]'],
+  ['Gateway (secure web gateway)','[TBC: web filter]','[TBC]'],
+  ['DLP and CASB','[TBC: any current tool]','[TBC]'],
+  ['AI Gateway','New capability: governs AI usage','New']]),
+ sp(),
+ H2('Sources'),
+ B('Cloudflare proposal for JMCO, October 7, 2026 (aigateway/Cloudflare_One_Proposal_JamesMoore.md).'),
+ B('Verbal implementation estimate from Presidio during a call with Cloudflare (not a written quote).'),
+ B('Cloudflare case studies (vendor marketing; aigateway/Cloudflare_Case_Studies_JamesMoore.md).'),
+ B('Internal comparison notes: Cloudflare AI Gateway vs CData Connect AI Gateway (aigateway/cloudflare_vs_cdata_ai_platform_comparison.md). Unsourced notes; to be verified.'),
+ B('CData press release announcing Connect AI Gateway early access, September 29, 2026 (cdata.com).'),
+ B('Kong documentation for AI Gateway and Konnect (developer.konghq.com/ai-manager).'),
+ B('Kiro product coverage (smile.eu; yourstory.com).'),
+ H2('Draft Notes (remove before issue)'),
+ TBC('Open items: firewall vendor, cost and contract end date; log retention and export; breakdown of the $300,000 by tool; ChatGPT credit allocation; implementation cost and delivery; Larry Neal’s role; compliance obligations; go-live date; what Premium Success covers; the Interna / Cloudflare One name; reference calls; funding source.'),
+];
+const doc=new Document({
+ styles:{default:{document:{run:{font:F,size:20}}}},
+ numbering:{config:[
+  {reference:'b',levels:[{level:0,format:LevelFormat.BULLET,text:'•',alignment:AlignmentType.LEFT,style:{paragraph:{indent:{left:720,hanging:360}}}}]},
+  {reference:'n',levels:[{level:0,format:LevelFormat.DECIMAL,text:'%1.',alignment:AlignmentType.LEFT,style:{paragraph:{indent:{left:720,hanging:360}}}}]}]},
+ sections:[{properties:{page:{size:{width:12240,height:15840},margin:{top:1440,bottom:1440,left:1440,right:1440}}},
+  footers:{default:new Footer({children:[new Paragraph({alignment:AlignmentType.RIGHT,children:[new TextRun({children:[PageNumber.CURRENT],font:'Cambria',size:18})]})]})},
+  children:c}]});
+Packer.toBuffer(doc).then(b=>fs.writeFileSync('/mnt/e/git/jmco/aigateway/AI Gateway Business Case.docx',b));
