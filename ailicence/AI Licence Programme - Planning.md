@@ -2,6 +2,8 @@
 
 Working draft, October 26, 2026. Internal, not yet for the Board. Level names and content are proposals for discussion with the AI champions.
 
+> **Out of date in places (see `CLAUDE.md`).** Since this was written: the portal is a later phase (section 5 is parked); there is no AI policy yet, so the rollout must start with creating or confirming one (research: `ai-policy-research.md`); and agentic access is enabled only once the Cloudflare AI Gateway is working, so Level 4 means "eligible", not "enabled". Levels and the evidence register (sections 2–4) are still the working draft.
+
 ## 1. Why
 
 Many staff want agentic AI (AI that can act on files, run code or connect to other systems). Giving it to everyone could leak files and client data. The firm wants staff to **earn** it, and to be able to **prove** afterwards why each person was given access.
