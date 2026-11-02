@@ -22,6 +22,14 @@ Read the root `../CLAUDE.md` first (structure, persuasion pattern, formatting, w
 - Fold in further research MD files as the user adds them.
 - Visual check of the .docx is not possible (LibreOffice not installed).
 
+**Cross-project research to review (added October 28, 2026; not yet done).** The AI Licence Programme project (`../ailicence/`) researched AI policy standards that may be worth mentioning in the gateway document (for example as the external basis for the gateway's controls, or in the risk and governance sections). When resuming here, read these and decide which points to use, then add them to the document with sources:
+- `../ailicence/source-notes-frameworks-and-firms.md` : SANS Critical AI Security Guidelines v1.4 (READ; logging, access control, rate limiting, input/output filtering, data minimisation, and a section on securing agentic systems), OWASP Top 10 for Agentic Applications 2026 (READ), COSO, AICPA, and what big firms do.
+- `../ailicence/source-notes-irs-and-jmco.md` : IRS OPR Alert 2026-19 (READ): firms must deploy AI policies and procedures, use only secure enterprise-approved AI for client data, vet third-party tools, and document it. Also a profile of JMCO from its website.
+- `../ailicence/source-notes-florida.md` : Florida rules that bear on a gateway (CPA confidentiality rule 61H1-23.001, breach statute § 501.171: reasonable security measures, AI vendors as "third-party agents", 30-day notice). Also `../ailicence/source-notes-frameworks-and-firms.md` includes COSO and ABA 512 vendor-vetting points.
+- `../ailicence/ai-policy-research.md` : the full source list with a READ / SECONDARY / NOT ACCESSED status per item, NIST AI 600-1, and a draft AI policy outline. Whether JMCO already has an AI policy is unconfirmed; the gateway work and the policy should line up.
+- Dependency the other way: agentic AI rights (Level 4 of the licence programme) will only be switched on once this gateway works. See `../ailicence/CLAUDE.md`.
+- Keep the source status (READ / SECONDARY / NOT ACCESSED) when citing, and do not present SECONDARY items as verified.
+
 **Reasoning behind the decisions is in `decisions-and-reasoning.md` (this folder). Read it after this file, and add to it whenever a decision is made or changed.**
 
 ## How the Word document is produced

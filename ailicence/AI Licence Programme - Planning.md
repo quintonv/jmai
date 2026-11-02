@@ -2,7 +2,7 @@
 
 Working draft, October 26, 2026. Internal, not yet for the Board. Level names and content are proposals for discussion with the AI champions.
 
-> **Out of date in places (see `CLAUDE.md`).** Since this was written: the portal is a later phase (section 5 is parked); there is no AI policy yet, so the rollout must start with creating or confirming one (research: `ai-policy-research.md`); and agentic access is enabled only once the Cloudflare AI Gateway is working, so Level 4 means "eligible", not "enabled". Levels and the evidence register (sections 2–4) are still the working draft.
+> **Out of date in places (see `CLAUDE.md`).** Since this was written: the portal is a later phase (section 5 is parked); whether an AI policy already exists is unconfirmed, so the rollout must start with confirming one exists (or creating one) (research: `ai-policy-research.md`); and agentic access is enabled only once the Cloudflare AI Gateway is working, so Level 4 means "eligible", not "enabled". Levels and the evidence register (sections 2–4) are still the working draft. The next document is a short-form **Framework and Plan** paper plus a separate Research Findings document (see `CLAUDE.md`). Developers (a few small dev teams) may need a different Level 4 path.
 
 ## 1. Why
 

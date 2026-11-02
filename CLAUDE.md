@@ -80,6 +80,8 @@ The Word template `aigateway/AI Gateway Business Case.docx` was built with `tool
 3. `docx` is NOT preinstalled in this environment. Run `npm install docx` in the same directory as the script first, then `node make-business-case-docx.js`.
 4. The script is a copy of the one used. Its `require('docx')` resolves from the folder the script is run in, so copy it to a folder where `docx` is installed before running it.
 
+> **Markdown-to-Word converter:** `tools/archive/md2docx.js.disabled` converts a simple Markdown file (headings, paragraphs, bullets, numbered lists, tables, bold/italic, links, `[TBC]` in backticks) to the house format. Used once for `ailicence/` (October 28, 2026). Copy it out of `archive/`, rename to `.js`, run `npm install docx` beside it, then `node md2docx.js in.md out.docx`. Never run it over a hand-edited .docx.
+
 **House format (matches the reference PDF)**
 - US Letter (12240 x 15840 DXA), 1" margins (1440 DXA).
 - Arial throughout. Body 10pt. Title 24pt bold, colour `1F4E79`. H1 14pt bold `1F4E79`. H2 11pt bold black.
